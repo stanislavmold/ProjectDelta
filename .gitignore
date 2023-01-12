@@ -1,5 +1,6 @@
 # Visual Studio 2015 user specific files
 .vs/
+.vsconfig
 
 # Rider
 .idea/
@@ -77,3 +78,8 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Other Files
+
+ProjectDelta.png
+ProjectDelta.sln
