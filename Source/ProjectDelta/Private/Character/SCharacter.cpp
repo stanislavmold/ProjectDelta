@@ -3,6 +3,7 @@
 
 #include "Character/SCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -33,6 +34,26 @@ void ASCharacter::BeginPlay()
 void ASCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    //Debug for movement
+
+    // -- Rotation Visualization -- //
+    const float DrawScale = 100.0f;
+    const float Thickness = 5.0f;
+
+    FVector LineStart = GetActorLocation();
+    // Offset to the right of pawn
+    LineStart += GetActorRightVector() * 100.0f;
+    // Set line end in direction of the actor's forward
+    FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
+    // Draw Actor's Direction
+    DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0,
+                              Thickness);
+
+    FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
+    // Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
+    DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f,
+                              0, Thickness);
 }
 
 
@@ -44,6 +65,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponen
     PlayerInputComponent->BindAxis("MoveRight", this, &ThisClass::MoveRight);
     PlayerInputComponent->BindAxis("LookUp", this, &ThisClass::LookUp);
     PlayerInputComponent->BindAxis("TurnAround", this, &ThisClass::TurnAround);
+
+    PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ThisClass::PrimaryAttack);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -76,4 +99,18 @@ void ASCharacter::LookUp(float Value)
 void ASCharacter::TurnAround(float Value)
 {
     AddControllerPitchInput(Value);
+}
+
+void ASCharacter::PrimaryAttack()
+{
+    const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+
+    const FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    if (!ProjectileClass) return;
+
+    GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }

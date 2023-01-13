@@ -21,13 +21,16 @@ protected:
     virtual void BeginPlay() override;
     
     
-    //Components for our character
+    //Components and classes for our character
 protected:
     UPROPERTY(VisibleAnywhere, Category = "CameraComponent")
     class UCameraComponent *CameraComponent;
 
     UPROPERTY(VisibleAnywhere, Category = "CameraComponent")
     class USpringArmComponent *SpringArmComponent;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<AActor>ProjectileClass;
 
     //Movement functions
 public:
@@ -37,6 +40,12 @@ public:
     void MoveRight(float Value);
     void LookUp(float Value);
     void TurnAround(float Value);
+
+    //Attack Functions
+protected:
+    void PrimaryAttack();
+
+    
 
 
 };
