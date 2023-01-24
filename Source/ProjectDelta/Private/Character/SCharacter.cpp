@@ -4,6 +4,7 @@
 #include "Character/SCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/InteractionComponent/SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -18,6 +19,8 @@ ASCharacter::ASCharacter()
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    InteractionComponent = CreateDefaultSubobject<USInteractionComponent>("InteractionComponent");
 
     GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -45,12 +48,12 @@ void ASCharacter::Tick(float DeltaTime)
     // Offset to the right of pawn
     LineStart += GetActorRightVector() * 100.0f;
     // Set line end in direction of the actor's forward
-    FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
+    const FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
     // Draw Actor's Direction
     DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0,
                               Thickness);
 
-    FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
+    const FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
     // Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
     DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f,
                               0, Thickness);
@@ -68,6 +71,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponen
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ThisClass::Jump);
 
     PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ThisClass::PrimaryAttack);
+    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ThisClass::Interact);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -114,4 +118,11 @@ void ASCharacter::PrimaryAttack()
     if (!ProjectileClass) return;
 
     GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+}
+
+void ASCharacter::Interact()
+{
+    if (!InteractionComponent) return;
+
+    InteractionComponent->PrimaryInteract();
 }

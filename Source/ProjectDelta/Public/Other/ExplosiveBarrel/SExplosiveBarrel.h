@@ -13,17 +13,15 @@ class PROJECTDELTA_API ASExplosiveBarrel : public AActor
 
 public:
     ASExplosiveBarrel();
-
-public:
+    
     virtual void Tick(float DeltaTime) override;
 
 protected:
     virtual void BeginPlay() override;
 
     //Components of actor
-protected:
     UPROPERTY(VisibleAnywhere)
-    class UStaticMeshComponent *MeshComponent;
+    UStaticMeshComponent *MeshComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     class URadialForceComponent *ForceComponent;

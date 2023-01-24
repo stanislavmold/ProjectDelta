@@ -2,10 +2,8 @@
 
 
 #include "Other/ExplosiveBarrel/SExplosiveBarrel.h"
-
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
-#include "Projectile/SProjectile.h"
 
 ASExplosiveBarrel::ASExplosiveBarrel()
 {

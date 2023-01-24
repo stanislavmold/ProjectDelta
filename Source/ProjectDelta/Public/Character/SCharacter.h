@@ -13,14 +13,14 @@ class PROJECTDELTA_API ASCharacter : public ACharacter
 
 public:
     ASCharacter();
-    
+
 public:
     virtual void Tick(float DeltaTime) override;
-    
+
 protected:
     virtual void BeginPlay() override;
-    
-    
+
+
     //Components and classes for our character
 protected:
     UPROPERTY(VisibleAnywhere, Category = "CameraComponent")
@@ -30,22 +30,22 @@ protected:
     class USpringArmComponent *SpringArmComponent;
 
     UPROPERTY(EditAnywhere)
-    TSubclassOf<AActor>ProjectileClass;
+    TSubclassOf<AActor> ProjectileClass;
+
+    UPROPERTY(VisibleAnywhere)
+    class USInteractionComponent *InteractionComponent;
 
     //Movement functions
 public:
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
-    
+
     void MoveForward(float Value);
     void MoveRight(float Value);
     void LookUp(float Value);
     void TurnAround(float Value);
 
-    //Attack Functions
+    //Pressed key functions
 protected:
     void PrimaryAttack();
-
-    
-
-
+    void Interact();
 };
